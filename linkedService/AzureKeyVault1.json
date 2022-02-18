@@ -1,0 +1,17 @@
+{
+	"name": "AzureKeyVault1",
+	"properties": {
+		"type": "AzureKeyVault",
+		"parameters": {
+			"synapseLinkedServiceKV": {
+				"type": "string",
+				"defaultValue": "jatinkvtest"
+			}
+		},
+		"typeProperties": {
+			"baseUrl": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.Synapse/workspaces/linkedservices"
+}
