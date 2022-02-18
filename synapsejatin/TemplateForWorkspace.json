@@ -14,6 +14,10 @@
 		"synapsejatin-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://jatinpuristorage.dfs.core.windows.net"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -98,6 +102,26 @@
 			"properties": {
 				"type": "ManagedIdentity",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "AzureKeyVault",
+				"parameters": {
+					"synapseLinkedServiceKV": {
+						"type": "string",
+						"defaultValue": "jatinkvtest"
+					}
+				},
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				},
+				"annotations": [],
+				"description": "Linked Service to Azure KeyVault. KeyVault is used to primarily fetch secrets"
 			},
 			"dependsOn": []
 		}
