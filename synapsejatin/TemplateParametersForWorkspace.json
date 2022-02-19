@@ -8,11 +8,14 @@
 		"synapsejatin-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
+		},
 		"synapsejatin-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://jatinpuristorage.dfs.core.windows.net"
 		},
-		"AzureKeyVault1_properties_typeProperties_baseUrl": {
-			"value": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
+		"AzureFunction1_properties_typeProperties_functionAppUrl": {
+			"value": "https://loginremindmeso.azurewebsites.net"
 		}
 	}
 }

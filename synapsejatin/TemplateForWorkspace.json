@@ -11,13 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'synapsejatin-WorkspaceDefaultSqlServer'"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
+		},
 		"synapsejatin-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://jatinpuristorage.dfs.core.windows.net"
 		},
-		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+		"AzureFunction1_properties_typeProperties_functionAppUrl": {
 			"type": "string",
-			"defaultValue": "https://@{linkedService().synapseLinkedServiceKV}.vault.azure.net/"
+			"defaultValue": "https://loginremindmeso.azurewebsites.net"
 		}
 	},
 	"variables": {
@@ -25,11 +29,21 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/test')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"name": "[concat(parameters('workspaceName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"annotations": []
+				"parameters": {
+					"synapseLinkedServiceKV": {
+						"type": "string",
+						"defaultValue": "jatinkvtest"
+					}
+				},
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
 			},
 			"dependsOn": []
 		},
@@ -106,24 +120,33 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/AzureKeyVault1')]",
+			"name": "[concat(parameters('workspaceName'), '/AzureFunction1')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"type": "AzureKeyVault",
-				"parameters": {
-					"synapseLinkedServiceKV": {
-						"type": "string",
-						"defaultValue": "jatinkvtest"
-					}
-				},
-				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-				},
 				"annotations": [],
-				"description": "Linked Service to Azure KeyVault. KeyVault is used to primarily fetch secrets"
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('AzureFunction1_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "Test"
+					},
+					"authentication": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AzureKeyVault1')]"
+			]
 		}
 	]
 }
